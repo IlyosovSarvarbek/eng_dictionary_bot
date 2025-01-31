@@ -1,15 +1,17 @@
 require('dotenv').config();
 const { Telegraf } = require('telegraf');
 const axios = require('axios');
+const express = require('express');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
+const app = express();
+const PORT = process.env.PORT || 3000;
 
 async function getWordDefinition(word) {
   try {
     const response = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
     const data = response.data[0];
-    
-    // Extract meanings, synonyms, antonyms
+
     const meanings = data.meanings.map(meaning => {
       const definition = meaning.definitions[0].definition;
       const synonyms = meaning.synonyms || [];
@@ -70,6 +72,14 @@ bot.on('text', async (ctx) => {
 
 bot.launch().then(() => {
   console.log('📚 Dictionary bot is online!');
+});
+
+app.get('/', (req, res) => {
+  res.send('Bot is running!');
+});
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server is running on port ${PORT}`);
 });
 
 process.once('SIGINT', () => bot.stop('SIGINT'));
