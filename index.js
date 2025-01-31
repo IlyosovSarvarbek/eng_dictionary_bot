@@ -7,6 +7,10 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.get('/', (req, res) => {
+  res.send('Bot is running!');
+});
+
 async function getWordDefinition(word) {
   try {
     const response = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
