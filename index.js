@@ -1,8 +1,8 @@
-require('dotenv').config();
-const { Telegraf } = require('telegraf');
-const axios = require('axios');
-const express = require('express');
-const { inlineKeyboard } = require('telegraf/markup');
+import 'dotenv/config';
+import { Telegraf } from 'telegraf';
+import axios from 'axios';
+import express from 'express';
+import job from './lib/cron.js';
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const app = express();
@@ -105,8 +105,16 @@ bot.launch().then(() => {
   console.log('📚 Dictionary bot is online!');
 });
 
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
+
+  if (process.env.NODE_ENV === "production") {
+    job.start();
+  }
 });
 
 process.once('SIGINT', () => bot.stop('SIGINT'));
