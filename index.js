@@ -112,7 +112,7 @@ app.get("/health", (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
 
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.RENDER_EXTERNAL_URL || process.env.FRONTEND_URL) {
     job.start();
   }
 });
